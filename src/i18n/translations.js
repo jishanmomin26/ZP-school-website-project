@@ -91,7 +91,7 @@ const translations = {
     about_achievement_4: "Digital Classroom",
     about_achievement_4_desc: "Successfully implemented digital learning program.",
     about_principal_title: "Message from our Teacher",
-    about_principal_name: "Sou. Renitas Pardeshi",
+    about_principal_name: "",
     about_principal_role: "Class Teacher",
     about_principal_message: "At ZP Kudave School, we believe every child deserves quality education. Our dedicated team works tirelessly to create an engaging and nurturing learning environment. We welcome parents and community members to join us in this noble mission of shaping the future of our children.",
 

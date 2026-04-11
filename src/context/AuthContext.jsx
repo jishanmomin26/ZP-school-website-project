@@ -6,7 +6,7 @@ const DEMO_CREDENTIALS = {
   teacher: {
     email: 'teacher@zpkudave.edu.in',
     password: 'Teacher@123',
-    name: 'Sou. Renitas Pardeshi',
+    name: 'Sou. Ranjita Pardeshi',
     role: 'teacher',
   },
   parent: {
@@ -17,6 +17,14 @@ const DEMO_CREDENTIALS = {
     studentName: 'Aarav Patil',
     studentClass: '3',
     studentRoll: '5',
+  },
+  student: {
+    studentId: 'STUDENT001',
+    password: 'Student@123',
+    name: 'Aarav Patil',
+    role: 'student',
+    class: '3',
+    rollNumber: '5',
   }
 };
 
@@ -29,6 +37,15 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return !!localStorage.getItem('zpkudave_token');
   });
+
+  useEffect(() => {
+    const saved = localStorage.getItem('zpkudave_user');
+    const token = localStorage.getItem('zpkudave_token');
+    if (saved && token) {
+      setUser(JSON.parse(saved));
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const login = (credentials, role) => {
     if (role === 'teacher') {
@@ -67,6 +84,25 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         setIsAuthenticated(true);
         return { success: true, role: 'parent' };
+      }
+    } else if (role === 'student') {
+      if (
+        credentials.studentId === DEMO_CREDENTIALS.student.studentId &&
+        credentials.password === DEMO_CREDENTIALS.student.password
+      ) {
+        const userData = {
+          name: DEMO_CREDENTIALS.student.name,
+          studentId: credentials.studentId,
+          role: 'student',
+          class: DEMO_CREDENTIALS.student.class,
+          rollNumber: DEMO_CREDENTIALS.student.rollNumber,
+        };
+        localStorage.setItem('zpkudave_user', JSON.stringify(userData));
+        localStorage.setItem('zpkudave_token', 'demo-student-token-' + Date.now());
+        localStorage.setItem('zpkudave_role', 'student');
+        setUser(userData);
+        setIsAuthenticated(true);
+        return { success: true, role: 'student' };
       }
     }
     return { success: false };

@@ -23,7 +23,7 @@ async function main() {
     create: {
       firebaseUid: 'mock-teacher-uid-456',
       email: 'teacher@zpkudave.edu.in',
-      name: 'Sou. Renitas Pardeshi',
+      name: 'Sou. Ranjita Pardeshi',
       role: 'TEACHER',
     },
   });
