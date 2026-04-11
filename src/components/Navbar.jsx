@@ -35,6 +35,7 @@ const Navbar = () => {
     { path: '/', label: t('nav_home') },
     { path: '/about', label: t('nav_about') },
     { path: '/donate', label: t('nav_donate') },
+    { path: 'https://books.ebalbharati.in/', label: t('nav_study_material'), external: true },
     { path: '/help', label: t('nav_help') },
     { path: '/contact', label: t('nav_contact') },
   ];
@@ -72,17 +73,29 @@ const Navbar = () => {
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive(link.path)
-                      ? 'bg-primary-50 text-primary-600'
-                      : 'text-dark-600 hover:bg-dark-50 hover:text-dark-900'
-                  }`}
-                >
-                  {link.label}
-                </Link>
+                link.external ? (
+                  <a
+                    key={link.path}
+                    href={link.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-dark-600 hover:bg-dark-50 hover:text-dark-900"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive(link.path)
+                        ? 'bg-primary-50 text-primary-600'
+                        : 'text-dark-600 hover:bg-dark-50 hover:text-dark-900'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
               ))}
             </div>
 
@@ -195,17 +208,29 @@ const Navbar = () => {
               </div>
               <div className="p-4 space-y-1">
                 {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                      isActive(link.path)
-                        ? 'bg-primary-50 text-primary-600'
-                        : 'text-dark-600 hover:bg-dark-50'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
+                  link.external ? (
+                    <a
+                      key={link.path}
+                      href={link.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 text-dark-600 hover:bg-dark-50"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={link.path}
+                      to={link.path}
+                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                        isActive(link.path)
+                          ? 'bg-primary-50 text-primary-600'
+                          : 'text-dark-600 hover:bg-dark-50'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  )
                 ))}
                 <div className="pt-4 mt-4 border-t border-dark-100 space-y-2">
                   {isAuthenticated ? (
