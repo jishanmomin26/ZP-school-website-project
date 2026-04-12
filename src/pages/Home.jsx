@@ -45,7 +45,7 @@ const Home = () => {
         <div className="absolute inset-0">
           <img
             src="/images/school-1.jpg"
-            alt="ZP Kudave School"
+            alt="RZP Kudave School"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-dark-900/85 via-primary-900/75 to-dark-900/90" />

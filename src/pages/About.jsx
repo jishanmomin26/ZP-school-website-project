@@ -25,7 +25,7 @@ const About = () => {
       {/* Banner */}
       <section className="relative h-[50vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/images/school-5.jpg" alt="About ZP Kudave" className="w-full h-full object-cover" />
+          <img src="/images/school-5.jpg" alt="About RZP Kudave" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-br from-dark-900/85 via-primary-900/75 to-dark-900/90" />
         </div>
         <div className="relative z-10 text-center px-4">

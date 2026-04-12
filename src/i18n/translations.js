@@ -11,7 +11,7 @@ const translations = {
     nav_register: "Register",
     nav_dashboard: "Dashboard",
     nav_logout: "Logout",
-    nav_school_name: "ZP Kudave School",
+    nav_school_name: "RZP Kudave School",
 
     // Hero
     hero_title: "Raigad Zilla Parishad School Kudave",
@@ -93,7 +93,7 @@ const translations = {
     about_principal_title: "Message from our Teacher",
     about_principal_name: "",
     about_principal_role: "Class Teacher",
-    about_principal_message: "At ZP Kudave School, we believe every child deserves quality education. Our dedicated team works tirelessly to create an engaging and nurturing learning environment. We welcome parents and community members to join us in this noble mission of shaping the future of our children.",
+    about_principal_message: "At RZP Kudave School, we believe every child deserves quality education. Our dedicated team works tirelessly to create an engaging and nurturing learning environment. We welcome parents and community members to join us in this noble mission of shaping the future of our children.",
 
     // Donate Page
     donate_title: "Support Our School",
