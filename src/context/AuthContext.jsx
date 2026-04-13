@@ -47,6 +47,23 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // 🔥 NEW: Firebase login support
+  const loginWithFirebase = (firebaseUser, userRole) => {
+    const userData = {
+      name: firebaseUser.name || firebaseUser.email,
+      email: firebaseUser.email,
+      role: userRole,
+    };
+
+    localStorage.setItem('zpkudave_user', JSON.stringify(userData));
+    localStorage.setItem('zpkudave_token', 'firebase-token-' + Date.now());
+    localStorage.setItem('zpkudave_role', userRole);
+
+    setUser(userData);
+    setIsAuthenticated(true);
+  };
+
+  // OLD DEMO LOGIN (kept as backup)
   const login = (credentials, role) => {
     if (role === 'teacher') {
       if (
@@ -117,7 +134,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      login,
+      logout,
+      loginWithFirebase   // 🔥 IMPORTANT
+    }}>
       {children}
     </AuthContext.Provider>
   );

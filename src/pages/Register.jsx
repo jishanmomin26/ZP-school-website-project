@@ -1,79 +1,130 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { FaChalkboardTeacher, FaUserFriends, FaEye, FaEyeSlash, FaSchool } from 'react-icons/fa';
+import { FaChalkboardTeacher, FaUserFriends, FaSchool, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import PageTransition from '../components/PageTransition';
-
-/* ✅ FIX: Move InputField OUTSIDE component */
-const InputField = ({ label, name, type = 'text', placeholder, error, form, setForm }) => (
-  <div>
-    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-      {label} *
-    </label>
-    <input
-      type={type}
-      value={form[name]}
-      onChange={(e) => setForm({ ...form, [name]: e.target.value })}
-      className={`input-field ${error ? 'border-red-400' : ''}`}
-      placeholder={placeholder}
-    />
-    {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-  </div>
-);
+import { registerTeacher, registerParent } from '../Firebase/auth.js';
 
 const Register = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { loginWithFirebase } = useAuth();
 
-  const [role, setRole] = useState('teacher');
+  const queryParams = new URLSearchParams(location.search);
+  const roleFromURL = queryParams.get('role');
+
+  const [role, setRole] = useState(roleFromURL || 'teacher');
   const [showPassword, setShowPassword] = useState(false);
 
-  const [form, setForm] = useState({
+  // ✅ Separate Forms
+  const [teacherForm, setTeacherForm] = useState({
     name: '',
     email: '',
-    phone: '',
     password: '',
-    confirm: '',
-    parentId: '',
-    studentName: '',
-    studentClass: '',
+    confirmPassword: ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [parentForm, setParentForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    parentId: ''
+  });
 
-  const validate = () => {
-    const e = {};
+  // 🔥 Dynamic form
+  const form = role === 'teacher' ? teacherForm : parentForm;
+  const setForm = role === 'teacher' ? setTeacherForm : setParentForm;
 
-    if (!form.name.trim()) e.name = 'Required';
-    if (!form.phone.trim()) e.phone = 'Required';
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    if (!form.password) e.password = 'Required';
-    else if (form.password.length < 8) e.password = 'Min 8 characters';
-
-    if (form.password !== form.confirm) e.confirm = 'Passwords do not match';
-
-    if (role === 'teacher') {
-      if (!form.email.trim()) e.email = 'Required';
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Invalid email';
-    } else {
-      if (!form.parentId.trim()) e.parentId = 'Required';
-      if (!form.studentName.trim()) e.studentName = 'Required';
-      if (!form.studentClass) e.studentClass = 'Required';
-    }
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
+  const validatePassword = (pw) => {
+    return (
+      pw.length >= 8 &&
+      /[A-Z]/.test(pw) &&
+      /[a-z]/.test(pw) &&
+      /[0-9]/.test(pw) &&
+      /[!@#$%^&*(),.?":{}|<>]/.test(pw)
+    );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
-    if (!validate()) return;
+    if (!validatePassword(form.password)) {
+      setError(t('login_password_rules'));
+      return;
+    }
 
-    toast.success(t('register_success'));
-    navigate('/login');
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    if (role === 'parent' && !form.parentId.trim()) {
+      setError('Parent ID is required.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      let result;
+
+      if (role === 'teacher') {
+        result = await registerTeacher({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          password: form.password
+        });
+
+        if (result.success) {
+          toast.success('Teacher registered 🎉');
+
+          loginWithFirebase({
+            email: result.user.email,
+            name: form.name
+          }, 'teacher');
+
+          navigate('/dashboard/teacher');
+        }
+
+      } else {
+        result = await registerParent({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          password: form.password,
+          parentId: form.parentId.trim()
+        });
+
+        if (result.success) {
+          toast.success('Parent registered 🎉');
+
+          loginWithFirebase({
+            email: result.user.email,
+            name: form.name
+          }, 'parent');
+
+          navigate('/dashboard/parent');
+        }
+      }
+
+      if (!result.success) {
+        setError(result.error || 'Registration failed.');
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,171 +133,150 @@ const Register = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          {/* Logo */}
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <FaSchool className="text-white text-2xl" />
+            <div className="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <FaSchool className="text-white text-xl" />
             </div>
-            <h1 className="font-poppins text-2xl font-bold text-dark-800">
-              {t('register_title')}
-            </h1>
-            <p className="text-dark-500 text-sm mt-1">
-              {t('register_subtitle')}
-            </p>
+            <h1 className="text-2xl font-bold">Create Account</h1>
           </div>
 
-          {/* Card */}
-          <div className="bg-white rounded-2xl shadow-xl border border-dark-100 overflow-hidden">
+          <div className="bg-white rounded-xl shadow p-6">
 
-            {/* Role Tabs */}
-            <div className="grid grid-cols-2 border-b border-dark-100">
+            {/* Tabs */}
+            <div className="grid grid-cols-2 mb-4">
+
               <button
-                onClick={() => setRole('teacher')}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
-                  role === 'teacher'
-                    ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
-                    : 'text-dark-400 hover:bg-dark-50'
-                }`}
+                onClick={() => {
+                  setRole('teacher');
+                  setError('');
+                  setTeacherForm({
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: ''
+                  });
+                }}
+                className={`flex items-center justify-center gap-2 py-3 rounded-lg transition ${role === 'teacher'
+                  ? 'bg-blue-100 text-blue-600 font-semibold'
+                  : 'text-gray-500 hover:bg-gray-100'
+                  }`}
               >
-                <FaChalkboardTeacher /> {t('register_teacher')}
+                <FaChalkboardTeacher className="text-lg" />
+                <span>Teacher</span>
               </button>
 
               <button
-                onClick={() => setRole('parent')}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
-                  role === 'parent'
-                    ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
-                    : 'text-dark-400 hover:bg-dark-50'
-                }`}
+                onClick={() => {
+                  setRole('parent');
+                  setError('');
+                  setParentForm({
+                    name: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                    parentId: ''
+                  });
+                }}
+                className={`flex items-center justify-center gap-2 py-3 rounded-lg transition ${role === 'parent'
+                  ? 'bg-blue-100 text-blue-600 font-semibold'
+                  : 'text-gray-500 hover:bg-gray-100'
+                  }`}
               >
-                <FaUserFriends /> {t('register_parent')}
+                <FaUserFriends className="text-lg" />
+                <span>Parent</span>
               </button>
+
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
 
-              <InputField
-                label={t('register_name')}
-                name="name"
-                placeholder={t('register_name')}
-                error={errors.name}
-                form={form}
-                setForm={setForm}
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="input-field"
+                required
               />
 
-              {role === 'teacher' ? (
-                <InputField
-                  label={t('register_email')}
-                  name="email"
-                  type="email"
-                  placeholder="teacher@example.com"
-                  error={errors.email}
-                  form={form}
-                  setForm={setForm}
+              <input
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="input-field"
+                required
+              />
+
+              {role === 'parent' && (
+                <input
+                  type="text"
+                  placeholder="Parent ID"
+                  value={form.parentId}
+                  onChange={(e) => setForm({ ...form, parentId: e.target.value.toUpperCase() })}
+                  className="input-field"
+                  required
                 />
-              ) : (
-                <>
-                  <InputField
-                    label={t('register_parent_id')}
-                    name="parentId"
-                    placeholder="PARENT002"
-                    error={errors.parentId}
-                    form={form}
-                    setForm={setForm}
-                  />
-
-                  <InputField
-                    label={t('register_student_name')}
-                    name="studentName"
-                    placeholder={t('register_student_name')}
-                    error={errors.studentName}
-                    form={form}
-                    setForm={setForm}
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                      {t('register_class')} *
-                    </label>
-                    <select
-                      value={form.studentClass}
-                      onChange={(e) => setForm({ ...form, studentClass: e.target.value })}
-                      className={`input-field ${errors.studentClass ? 'border-red-400' : ''}`}
-                    >
-                      <option value="">{t('teacher_select_class')}</option>
-                      <option value="1">1st</option>
-                      <option value="2">2nd</option>
-                      <option value="3">3rd</option>
-                      <option value="4">4th</option>
-                    </select>
-                    {errors.studentClass && (
-                      <p className="text-red-500 text-xs mt-1">{errors.studentClass}</p>
-                    )}
-                  </div>
-                </>
               )}
 
-              <InputField
-                label={t('register_phone')}
-                name="phone"
-                type="tel"
-                placeholder="+91 9876543210"
-                error={errors.phone}
-                form={form}
-                setForm={setForm}
-              />
-
               {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                  {t('register_password')} *
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className={`input-field pr-12 ${errors.password ? 'border-red-400' : ''}`}
-                    placeholder="••••••••"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400"
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                )}
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="input-field pr-12"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               </div>
 
-              <InputField
-                label={t('register_confirm')}
-                name="confirm"
-                type="password"
-                placeholder="••••••••"
-                error={errors.confirm}
-                form={form}
-                setForm={setForm}
-              />
+              {/* Confirm Password */}
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Confirm Password"
+                  value={form.confirmPassword}
+                  onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                  className="input-field pr-12"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
 
-              <button type="submit" className="btn-primary w-full">
-                {t('register_button')}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              <button className="btn-primary w-full">
+                {loading ? 'Please wait...' : 'Register'}
               </button>
 
-              <p className="text-center text-dark-500 text-sm">
-                {t('register_have_account')}{' '}
-                <Link to="/login" className="text-primary-600 font-semibold">
-                  {t('register_login_link')}
-                </Link>
-              </p>
             </form>
+
+            <p className="text-center mt-4 text-sm">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="font-semibold text-primary-600 hover:underline"
+              >
+                Login
+              </Link>
+            </p>
+
           </div>
         </motion.div>
       </section>
