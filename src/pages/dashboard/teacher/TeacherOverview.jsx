@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { db } from '../../../Firebase/config';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { promoteStudents } from '../../../Firebase/promotion';
+import toast from 'react-hot-toast';
+
 
 const TeacherOverview = () => {
 
@@ -118,6 +121,24 @@ const TeacherOverview = () => {
               {stats.percentage}% students are present today
             </p>
           </div>
+
+          <button
+            onClick={async () => {
+              const confirm = window.confirm("Promote all students to next class?");
+              if (!confirm) return;
+
+              const res = await promoteStudents();
+
+              if (res.success) {
+                toast.success("Students promoted successfully 🎉");
+              } else {
+                toast.error("Promotion failed ❌");
+              }
+            }}
+            className="bg-purple-600 text-white px-4 py-2 rounded-xl shadow hover:bg-purple-700"
+          >
+            Promote Students
+          </button>
         </>
       )}
     </motion.div>
