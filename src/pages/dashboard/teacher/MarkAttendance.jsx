@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { FaSave, FaCalendarAlt, FaList } from 'react-icons/fa';
 import { useLanguage } from '../../../context/LanguageContext';
-import { students } from '../../../data/dummyData';
+import { getStudents } from '../../../Firebase/students';
 import { db } from '../../../Firebase/config';
 import { collection, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore';
 
@@ -15,13 +15,23 @@ const getDaysInMonth = (monthStr) => {
 
 const MarkAttendance = () => {
   const { t } = useLanguage();
-  
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const data = await getStudents();
+      setStudents(data);
+    };
+
+    fetchStudents();
+  }, []);
+
   // Modes & Selectors
   const [viewMode, setViewMode] = useState('daily'); // 'daily' | 'monthly'
   const [selectedClass, setSelectedClass] = useState('1');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [selectedMonth, setSelectedMonth] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2, '0')}`);
-  
+  const [selectedMonth, setSelectedMonth] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
+  const [students, setStudents] = useState([]);
+
   // Data State
   const [dailyAttendance, setDailyAttendance] = useState({});
   const [monthlyAttendance, setMonthlyAttendance] = useState({});
@@ -30,11 +40,11 @@ const MarkAttendance = () => {
 
   const filteredStudents = students.filter(s => s.class === String(selectedClass));
   const numDays = getDaysInMonth(selectedMonth);
-  const daysArray = Array.from({length: numDays}, (_, i) => String(i + 1).padStart(2, '0'));
+  const daysArray = Array.from({ length: numDays }, (_, i) => String(i + 1).padStart(2, '0'));
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchAttendance = async () => {
       setLoading(true);
       try {
@@ -116,14 +126,14 @@ const MarkAttendance = () => {
       let next = 'present';
       if (current === 'present') next = 'absent';
       else if (current === 'absent') next = null; // Clear if clicked again
-      
+
       setDirtyCells(dc => ({ ...dc, [`${studentId}_${dateStr}`]: next }));
 
       return {
         ...prev,
         [studentId]: {
-           ...(prev[studentId] || {}),
-           [dateStr]: next
+          ...(prev[studentId] || {}),
+          [dateStr]: next
         }
       };
     });
@@ -140,7 +150,7 @@ const MarkAttendance = () => {
           const status = dailyAttendance[student.id] || 'present';
           const docRef = doc(db, 'attendance', String(student.id), 'records', selectedDate);
           currentBatch.set(docRef, { status, timestamp: new Date().toISOString() }, { merge: true });
-          
+
           opCount++;
           if (opCount === 500) {
             await currentBatch.commit();
@@ -149,7 +159,7 @@ const MarkAttendance = () => {
           }
         }
         if (opCount > 0) await currentBatch.commit();
-        
+
       } else {
         const keys = Object.keys(dirtyCells);
         if (keys.length === 0) {
@@ -166,14 +176,14 @@ const MarkAttendance = () => {
           const studentId = key.substring(0, underscoreIndex);
           const dateStr = key.substring(underscoreIndex + 1);
           const status = dirtyCells[key];
-          
+
           const docRef = doc(db, 'attendance', String(studentId), 'records', dateStr);
           if (status) {
             currentBatch.set(docRef, { status, timestamp: new Date().toISOString() }, { merge: true });
           } else {
             currentBatch.delete(docRef);
           }
-          
+
           opCount++;
           if (opCount === 500) {
             await currentBatch.commit();
@@ -196,22 +206,20 @@ const MarkAttendance = () => {
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="font-poppins text-2xl font-bold text-dark-800">{t('dash_mark_attendance')}</h1>
-        
+
         {/* View Toggle */}
         <div className="flex bg-white p-1 rounded-lg border border-dark-100 shadow-sm">
           <button
             onClick={() => setViewMode('daily')}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${
-              viewMode === 'daily' ? 'bg-primary-50 text-primary-600' : 'text-dark-500 hover:text-dark-700'
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${viewMode === 'daily' ? 'bg-primary-50 text-primary-600' : 'text-dark-500 hover:text-dark-700'
+              }`}
           >
             <FaList /> {t('dash_daily_view') || "Daily"}
           </button>
           <button
             onClick={() => setViewMode('monthly')}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${
-              viewMode === 'monthly' ? 'bg-primary-50 text-primary-600' : 'text-dark-500 hover:text-dark-700'
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${viewMode === 'monthly' ? 'bg-primary-50 text-primary-600' : 'text-dark-500 hover:text-dark-700'
+              }`}
           >
             <FaCalendarAlt /> {t('dash_monthly_view') || "Monthly Overview"}
           </button>
@@ -227,11 +235,10 @@ const MarkAttendance = () => {
               <button
                 key={cls}
                 onClick={() => setSelectedClass(cls)}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                  selectedClass === cls
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'bg-dark-50 text-dark-600 border border-dark-200 hover:border-primary-300'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${selectedClass === cls
+                  ? 'bg-primary-600 text-white shadow-md'
+                  : 'bg-dark-50 text-dark-600 border border-dark-200 hover:border-primary-300'
+                  }`}
               >
                 {t('teacher_class')} {cls}
               </button>
@@ -269,7 +276,7 @@ const MarkAttendance = () => {
       <div className="bg-white rounded-xl shadow-sm border border-dark-100 overflow-hidden">
         {loading ? (
           <div className="animate-pulse p-6 space-y-4">
-            {[1,2,3,4,5].map(i => (
+            {[1, 2, 3, 4, 5].map(i => (
               <div key={i} className="flex gap-4">
                 <div className="h-8 bg-dark-100 rounded flex-1" />
                 <div className="h-8 bg-dark-100 rounded flex-1" />
@@ -307,18 +314,15 @@ const MarkAttendance = () => {
                             <div className="flex justify-center">
                               <button
                                 onClick={() => toggleDailyAttendance(student.id)}
-                                className={`relative w-20 h-9 rounded-full transition-all duration-300 ${
-                                  dailyAttendance[student.id] === 'present'
-                                    ? 'bg-emerald-500'
-                                    : 'bg-rose-500'
-                                }`}
+                                className={`relative w-20 h-9 rounded-full transition-all duration-300 ${dailyAttendance[student.id] === 'present'
+                                  ? 'bg-emerald-500'
+                                  : 'bg-rose-500'
+                                  }`}
                               >
-                                <span className={`absolute top-1 w-7 h-7 bg-white rounded-full shadow transition-all duration-300 ${
-                                  dailyAttendance[student.id] === 'present' ? 'left-11' : 'left-1'
-                                }`} />
-                                <span className={`absolute inset-0 flex items-center text-white text-xs font-bold ${
-                                  dailyAttendance[student.id] === 'present' ? 'justify-start pl-2.5' : 'justify-end pr-2'
-                                }`}>
+                                <span className={`absolute top-1 w-7 h-7 bg-white rounded-full shadow transition-all duration-300 ${dailyAttendance[student.id] === 'present' ? 'left-11' : 'left-1'
+                                  }`} />
+                                <span className={`absolute inset-0 flex items-center text-white text-xs font-bold ${dailyAttendance[student.id] === 'present' ? 'justify-start pl-2.5' : 'justify-end pr-2'
+                                  }`}>
                                   {dailyAttendance[student.id] === 'present' ? 'P' : 'A'}
                                 </span>
                               </button>
@@ -374,8 +378,8 @@ const MarkAttendance = () => {
                             {daysArray.map(day => {
                               const dateStr = `${selectedMonth}-${day}`;
                               const status = monthlyAttendance[student.id]?.[dateStr];
-                              
-                              let cellClass = 'bg-dark-50/50 text-transparent hover:bg-dark-100'; 
+
+                              let cellClass = 'bg-dark-50/50 text-transparent hover:bg-dark-100';
                               let char = '-';
                               if (status === 'present') {
                                 cellClass = 'bg-emerald-500 text-white shadow-sm';
@@ -390,7 +394,7 @@ const MarkAttendance = () => {
 
                               return (
                                 <td key={day} className="p-1 border-r border-dark-100 text-center">
-                                  <button 
+                                  <button
                                     onClick={() => toggleMonthlyAttendance(student.id, dateStr)}
                                     className={`w-7 h-7 mx-auto rounded text-xs font-bold transition-all transform active:scale-95 ${cellClass}`}
                                     title={`${student.name} - ${dateStr}`}
@@ -420,14 +424,14 @@ const MarkAttendance = () => {
         <div className="flex gap-4 items-center">
           {viewMode === 'monthly' && (
             <div className="flex gap-3 text-xs bg-white px-4 py-2 rounded-lg border border-dark-100 shadow-sm">
-               <span className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded-sm"></span> Present (P)</span>
-               <span className="flex items-center gap-1"><span className="w-3 h-3 bg-rose-500 rounded-sm"></span> Absent (A)</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded-sm"></span> Present (P)</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 bg-rose-500 rounded-sm"></span> Absent (A)</span>
             </div>
           )}
         </div>
-        <button 
-          onClick={handleSave} 
-          disabled={loading || (viewMode === 'monthly' && Object.keys(dirtyCells).length === 0)} 
+        <button
+          onClick={handleSave}
+          disabled={loading || (viewMode === 'monthly' && Object.keys(dirtyCells).length === 0)}
           className="btn-primary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaSave /> {viewMode === 'monthly' && Object.keys(dirtyCells).length > 0 ? `Save Changes (${Object.keys(dirtyCells).length})` : t('teacher_save')}

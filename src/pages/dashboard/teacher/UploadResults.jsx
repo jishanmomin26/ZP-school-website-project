@@ -20,46 +20,46 @@ const UploadResults = () => {
 
   const filteredStudents = students.filter(s => s.class === selectedClass);
 
-useEffect(() => {
-  const loadResults = async () => {
-    try {
-      const snap = await getDoc(doc(db, 'results', `class_${selectedClass}`));
+  useEffect(() => {
+    const loadResults = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'results', `class_${selectedClass}`));
 
-      let firebaseResults = [];
+        let firebaseResults = [];
 
-      if (snap.exists()) {
-        firebaseResults = snap.data()[selectedExam] || [];
+        if (snap.exists()) {
+          firebaseResults = snap.data()[selectedExam] || [];
+        }
+
+        const existingResults =
+          firebaseResults.length > 0
+            ? firebaseResults
+            : defaultResults[students, selectedClass]?.[selectedExam] || [];
+
+        const initial = {};
+
+        filteredStudents.forEach(s => {
+          const existing = existingResults.find(
+            r => String(r.studentId) === String(s.id)
+          );
+
+          initial[s.id] = existing || {
+            marathi: '',
+            english: '',
+            maths: '',
+            evs: ''
+          };
+        });
+
+        setResults(initial);
+
+      } catch (err) {
+        console.error("Error loading results:", err);
       }
+    };
 
-      const existingResults =
-        firebaseResults.length > 0
-          ? firebaseResults
-          : defaultResults[selectedClass]?.[selectedExam] || [];
-
-      const initial = {};
-
-      filteredStudents.forEach(s => {
-        const existing = existingResults.find(
-          r => String(r.studentId) === String(s.id)
-        );
-
-        initial[s.id] = existing || {
-          marathi: '',
-          english: '',
-          maths: '',
-          evs: ''
-        };
-      });
-
-      setResults(initial);
-
-    } catch (err) {
-      console.error("Error loading results:", err);
-    }
-  };
-
-  loadResults();
-}, [selectedClass, selectedExam]);
+    loadResults();
+  }, [selectedClass, selectedExam]);
 
   const updateMark = (studentId, subject, value) => {
     const num = value === '' ? '' : Math.min(maxMarks, Math.max(0, Number(value)));
@@ -124,11 +124,10 @@ useEffect(() => {
               <button
                 key={cls}
                 onClick={() => setSelectedClass(cls)}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                  selectedClass === cls
+                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${selectedClass === cls
                     ? 'bg-primary-600 text-white shadow-md'
                     : 'bg-white text-dark-600 border border-dark-200 hover:border-primary-300'
-                }`}
+                  }`}
               >
                 {t('teacher_class')} {cls}
               </button>

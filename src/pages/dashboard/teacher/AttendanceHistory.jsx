@@ -10,7 +10,7 @@ import {
   CartesianGrid
 } from 'recharts';
 import { FaChartBar, FaList } from 'react-icons/fa';
-import { students } from '../../../data/dummyData';
+import { getStudents } from '../../../Firebase/students';
 import { db } from '../../../Firebase/config';
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 
@@ -18,10 +18,20 @@ const AttendanceHistory = () => {
 
   const [viewMode, setViewMode] = useState('monthly');
   const [selectedClass, setSelectedClass] = useState('1');
+  const [students, setStudents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedMonth, setSelectedMonth] = useState(
     `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`
   );
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const data = await getStudents();
+      setStudents(data);
+    };
+
+    fetchStudents();
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [attendanceData, setAttendanceData] = useState([]);
@@ -29,7 +39,7 @@ const AttendanceHistory = () => {
 
   const filteredStudents = useMemo(() => {
     return students.filter(s => s.class === String(selectedClass));
-  }, [selectedClass]);
+  }, [students, selectedClass]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,11 +129,10 @@ const AttendanceHistory = () => {
           <button
             key={cls}
             onClick={() => setSelectedClass(cls)}
-            className={`px-4 py-2 rounded-lg font-semibold transition ${
-              selectedClass === cls
-                ? 'bg-blue-600 text-white shadow'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
+            className={`px-4 py-2 rounded-lg font-semibold transition ${selectedClass === cls
+              ? 'bg-blue-600 text-white shadow'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
           >
             Class {cls}
           </button>
@@ -149,22 +158,20 @@ const AttendanceHistory = () => {
       <div className="flex gap-2">
         <button
           onClick={() => setViewMode('daily')}
-          className={`px-4 py-2 rounded-lg font-semibold transition ${
-            viewMode === 'daily'
-              ? 'bg-blue-600 text-white shadow'
-              : 'bg-gray-100 text-gray-600'
-          }`}
+          className={`px-4 py-2 rounded-lg font-semibold transition ${viewMode === 'daily'
+            ? 'bg-blue-600 text-white shadow'
+            : 'bg-gray-100 text-gray-600'
+            }`}
         >
           <FaList /> Daily
         </button>
 
         <button
           onClick={() => setViewMode('monthly')}
-          className={`px-4 py-2 rounded-lg font-semibold transition ${
-            viewMode === 'monthly'
-              ? 'bg-blue-600 text-white shadow'
-              : 'bg-gray-100 text-gray-600'
-          }`}
+          className={`px-4 py-2 rounded-lg font-semibold transition ${viewMode === 'monthly'
+            ? 'bg-blue-600 text-white shadow'
+            : 'bg-gray-100 text-gray-600'
+            }`}
         >
           <FaChartBar /> Monthly
         </button>
@@ -207,8 +214,8 @@ const AttendanceHistory = () => {
                     <XAxis dataKey="name" interval={0} />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="present" fill="#3B82F6" radius={[6,6,0,0]} />
-                    <Bar dataKey="absent" fill="#FB7185" radius={[6,6,0,0]} />
+                    <Bar dataKey="present" fill="#3B82F6" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="absent" fill="#FB7185" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

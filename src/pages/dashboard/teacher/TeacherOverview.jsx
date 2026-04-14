@@ -4,10 +4,11 @@ import { db } from '../../../Firebase/config';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { promoteStudents } from '../../../Firebase/promotion';
 import toast from 'react-hot-toast';
-
+import { getStudents } from '../../../Firebase/students';
 
 const TeacherOverview = () => {
 
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalStudents: 0,
@@ -15,6 +16,15 @@ const TeacherOverview = () => {
     absent: 0,
     percentage: 0
   });
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const data = await getStudents();
+      setStudents(data);
+    };
+
+    fetchStudents();
+  }, []);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -24,7 +34,7 @@ const TeacherOverview = () => {
 
       try {
         // 🔥 Get all students
-        const studentsSnapshot = await getDocs(collection(db, 'students'));
+        const studentsData = students;
         const students = studentsSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
