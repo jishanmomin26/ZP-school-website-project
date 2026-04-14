@@ -75,6 +75,7 @@ const Login = () => {
           loginWithFirebase({
             email: result.user.email,
             name: result.userData.name,
+            studentId: result.userData.studentId,
           }, 'parent');
 
           navigate('/dashboard/parent');
