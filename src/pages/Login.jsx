@@ -4,22 +4,27 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { FaChalkboardTeacher, FaUserFriends, FaEye, FaEyeSlash, FaSchool } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
-import { useAuth } from '../context/AuthContext'; // 🔥 ADDED
+import { useAuth } from '../context/AuthContext';
 import PageTransition from '../components/PageTransition';
 import { loginTeacher, loginParent } from '../Firebase/auth.js';
 
 const Login = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { loginWithFirebase } = useAuth(); // 🔥 ADDED
+  const { loginWithFirebase } = useAuth();
 
   const [role, setRole] = useState('teacher');
   const [showPassword, setShowPassword] = useState(false);
+
+  // ✅ SAME FORM (unchanged)
   const [form, setForm] = useState({
     email: '',
-    password: '',
     parentId: ''
   });
+
+  // 🔥 FIX: separate password state
+  const [password, setPassword] = useState('');
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -40,7 +45,7 @@ const Login = () => {
 
     try {
       if (role === 'teacher') {
-        if (!validatePassword(form.password)) {
+        if (!validatePassword(password)) {
           setError(t('login_password_rules'));
           setLoading(false);
           return;
@@ -48,15 +53,12 @@ const Login = () => {
 
         const result = await loginTeacher({
           email: form.email.trim(),
-          password: form.password
+          password: password // ✅ FIXED
         });
 
         if (result.success) {
           toast.success('Welcome, Teacher! 🎉');
-
-          // 🔥 THIS WAS MISSING (VERY IMPORTANT)
           loginWithFirebase(result.user, 'teacher');
-
           navigate('/dashboard/teacher');
         } else {
           setError(result.error || t('login_error'));
@@ -64,16 +66,15 @@ const Login = () => {
       } else {
         const result = await loginParent({
           parentId: form.parentId.trim(),
-          password: form.password
+          password: password // ✅ FIXED
         });
 
         if (result.success) {
           toast.success('Welcome, Parent! 🎉');
 
-          // 🔥 ALSO ADD FOR PARENT
           loginWithFirebase({
             email: result.user.email,
-            name: result.userData.name, // ✅ real name
+            name: result.userData.name,
           }, 'parent');
 
           navigate('/dashboard/parent');
@@ -113,11 +114,13 @@ const Login = () => {
                 onClick={() => {
                   setRole('teacher');
                   setError('');
+                  setPassword(''); // ✅ reset password
                 }}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${role === 'teacher'
+                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
+                  role === 'teacher'
                     ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
                     : 'text-dark-400 hover:bg-dark-50'
-                  }`}
+                }`}
               >
                 <FaChalkboardTeacher /> {t('login_teacher')}
               </button>
@@ -127,11 +130,13 @@ const Login = () => {
                 onClick={() => {
                   setRole('parent');
                   setError('');
+                  setPassword(''); // ✅ reset password
                 }}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${role === 'parent'
+                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
+                  role === 'parent'
                     ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
                     : 'text-dark-400 hover:bg-dark-50'
-                  }`}
+                }`}
               >
                 <FaUserFriends /> {t('login_parent')}
               </button>
@@ -148,7 +153,7 @@ const Login = () => {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="input-field"
-                    placeholder="teacher@gmail.com"
+                    placeholder="Enter Email"
                     required
                   />
                 </div>
@@ -162,7 +167,7 @@ const Login = () => {
                     value={form.parentId}
                     onChange={(e) => setForm({ ...form, parentId: e.target.value })}
                     className="input-field"
-                    placeholder="PARENT001"
+                    placeholder="Enter Parent ID"
                     required
                   />
                 </div>
@@ -175,9 +180,10 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    value={password} // ✅ FIXED
+                    onChange={(e) => setPassword(e.target.value)} // ✅ FIXED
                     className="input-field pr-12"
+                    placeholder="Enter Password"  
                     required
                   />
                   <button
