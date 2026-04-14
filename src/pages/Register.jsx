@@ -7,6 +7,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import PageTransition from '../components/PageTransition';
 import { registerTeacher, registerParent } from '../Firebase/auth.js';
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Register = () => {
   const { t } = useLanguage();
