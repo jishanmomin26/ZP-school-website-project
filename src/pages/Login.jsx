@@ -38,58 +38,51 @@ const Login = () => {
     );
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      if (role === 'teacher') {
-        if (!validatePassword(password)) {
-          setError(t('login_password_rules'));
-          setLoading(false);
-          return;
-        }
+  try {
+    // 🔥 TEACHER LOGIN
+    if (role === "teacher") {
+      const result = await loginTeacher({
+        email: form.email.trim(),
+        password
+      });
 
-        const result = await loginTeacher({
-          email: form.email.trim(),
-          password: password // ✅ FIXED
-        });
+      if (result.success) {
+        const res = await loginWithFirebase(result.user);
 
-        if (result.success) {
-          toast.success('Welcome, Teacher! 🎉');
-          loginWithFirebase(result.user, 'teacher');
-          navigate('/dashboard/teacher');
-        } else {
-          setError(result.error || t('login_error'));
+        if (res.success) {
+          window.location.href = "/dashboard/teacher";
         }
       } else {
-        const result = await loginParent({
-          parentId: form.parentId.trim(),
-          password: password // ✅ FIXED
-        });
-
-        if (result.success) {
-          toast.success('Welcome, Parent! 🎉');
-
-          loginWithFirebase({
-            email: result.user.email,
-            name: result.userData.name,
-            studentId: result.userData.studentId,
-          }, 'parent');
-
-          navigate('/dashboard/parent');
-        } else {
-          setError(result.error || t('login_error'));
-        }
+        setError(result.error || "Login failed");
       }
-    } catch (err) {
-      setError('Login failed. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 🔥 PARENT LOGIN
+    else {
+      const result = await loginParent({
+        parentId: form.parentId.trim(),
+        password
+      });
+
+      if (result.success) {
+        const res = await loginWithFirebase(result.user);
+
+        if (res.success) {
+          window.location.href = "/dashboard/parent";
+        }
+      } else {
+        setError(result.error || "Login failed");
+      }
+    }
+
+  } catch (error) {
+    console.error(error);
+    setError("Something went wrong");
+  }
+};
 
   return (
     <PageTransition>
@@ -117,11 +110,10 @@ const Login = () => {
                   setError('');
                   setPassword(''); // ✅ reset password
                 }}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
-                  role === 'teacher'
-                    ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
-                    : 'text-dark-400 hover:bg-dark-50'
-                }`}
+                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${role === 'teacher'
+                  ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
+                  : 'text-dark-400 hover:bg-dark-50'
+                  }`}
               >
                 <FaChalkboardTeacher /> {t('login_teacher')}
               </button>
@@ -133,11 +125,10 @@ const Login = () => {
                   setError('');
                   setPassword(''); // ✅ reset password
                 }}
-                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${
-                  role === 'parent'
-                    ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
-                    : 'text-dark-400 hover:bg-dark-50'
-                }`}
+                className={`flex items-center justify-center gap-2 py-4 font-semibold text-sm ${role === 'parent'
+                  ? 'bg-primary-50 text-primary-600 border-b-2 border-primary-600'
+                  : 'text-dark-400 hover:bg-dark-50'
+                  }`}
               >
                 <FaUserFriends /> {t('login_parent')}
               </button>
@@ -184,7 +175,7 @@ const Login = () => {
                     value={password} // ✅ FIXED
                     onChange={(e) => setPassword(e.target.value)} // ✅ FIXED
                     className="input-field pr-12"
-                    placeholder="Enter Password"  
+                    placeholder="Enter Password"
                     required
                   />
                   <button

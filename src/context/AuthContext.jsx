@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../Firebase/config";
+
 
 const AuthContext = createContext();
 
@@ -15,6 +16,9 @@ export const AuthProvider = ({ children }) => {
     return !!localStorage.getItem('zpkudave_token');
   });
 
+  // 🔥 ADD THIS
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const saved = localStorage.getItem('zpkudave_user');
     const token = localStorage.getItem('zpkudave_token');
@@ -23,47 +27,36 @@ export const AuthProvider = ({ children }) => {
       setUser(JSON.parse(saved));
       setIsAuthenticated(true);
     }
+
+    setLoading(false); // ✅ VERY IMPORTANT
   }, []);
 
-  // 🔐 FIREBASE LOGIN (FIXED)
+  // 🔐 FIREBASE LOGIN
   const loginWithFirebase = async (firebaseUser) => {
     try {
-      const userRef = doc(db, "users", firebaseUser.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        throw new Error("User role not found in Firestore");
-      }
-
-      const data = userSnap.data();
-
-      // ✅ FIX: include studentId for parent
       const userData = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
-        name: data.name || firebaseUser.email,
-        role: data.role,
-        studentId: data.studentId || null, // 🔥 IMPORTANT FIX
+        role: firebaseUser.email === "rzpschoolkudave1956@gmail.com"
+          ? "teacher"
+          : "parent",
       };
 
-      // 💾 Save
-      localStorage.setItem('zpkudave_user', JSON.stringify(userData));
-      localStorage.setItem('zpkudave_token', 'firebase-token-' + Date.now());
-      localStorage.setItem('zpkudave_role', data.role);
+      // 🔥 FORCE SAVE (NO FIRESTORE DEPENDENCY)
+      localStorage.setItem("zpkudave_user", JSON.stringify(userData));
+      localStorage.setItem("zpkudave_token", "token");
 
-      // 🔄 Update state
       setUser(userData);
       setIsAuthenticated(true);
 
-      return { success: true, role: data.role };
+      return { success: true, role: userData.role };
 
     } catch (error) {
-      console.error("Login error:", error);
-      return { success: false, message: error.message };
+      console.error(error);
+      return { success: false };
     }
   };
 
-  // 🚪 LOGOUT
   const logout = () => {
     localStorage.removeItem('zpkudave_user');
     localStorage.removeItem('zpkudave_token');
@@ -77,6 +70,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       isAuthenticated,
+      loading, // ✅ ADD THIS
       loginWithFirebase,
       logout
     }}>

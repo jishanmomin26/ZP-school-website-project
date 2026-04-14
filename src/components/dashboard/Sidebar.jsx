@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FaChartPie, FaClipboardCheck, FaHistory, FaExclamationTriangle, FaUpload, FaBullhorn, FaSignOutAlt, FaBars, FaTimes, FaSchool } from 'react-icons/fa';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
+import { FaUserGraduate } from "react-icons/fa";
 
 const Sidebar = () => {
   const { t } = useLanguage();
@@ -18,6 +19,7 @@ const Sidebar = () => {
     { path: '/dashboard/teacher/defaulters', icon: FaExclamationTriangle, label: t('dash_defaulter_list') },
     { path: '/dashboard/teacher/upload-results', icon: FaUpload, label: t('dash_upload_results') },
     { path: '/dashboard/teacher/notices', icon: FaBullhorn, label: t('dash_notices') },
+    { path: '/dashboard/teacher/manage-students', icon: FaUserGraduate, label: "Manage Students" },
   ];
 
   const handleLogout = () => {

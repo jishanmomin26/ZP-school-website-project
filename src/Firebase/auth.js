@@ -65,6 +65,7 @@ export const registerParent = async ({ name, email, password, parentId }) => {
       name: name || '',
       email,
       parentId,
+      studentId: null, 
       role: 'parent',
       createdAt: new Date().toISOString()
     });

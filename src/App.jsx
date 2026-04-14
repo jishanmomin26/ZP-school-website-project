@@ -30,6 +30,7 @@ import AttendanceHistory from './pages/dashboard/teacher/AttendanceHistory';
 import DefaulterList from './pages/dashboard/teacher/DefaulterList';
 import UploadResults from './pages/dashboard/teacher/UploadResults';
 import Notices from './pages/dashboard/teacher/Notices';
+import ManageStudents from './pages/dashboard/teacher/ManageStudents';
 
 // Parent Dashboard
 import ParentDashboard from './pages/dashboard/parent/ParentDashboard';
@@ -114,6 +115,7 @@ function App() {
               <Route path="defaulters" element={<DefaulterList />} />
               <Route path="upload-results" element={<UploadResults />} />
               <Route path="notices" element={<Notices />} />
+              <Route path="manage-students" element={<ManageStudents />} />
             </Route>
 
             {/* Parent Dashboard */}
