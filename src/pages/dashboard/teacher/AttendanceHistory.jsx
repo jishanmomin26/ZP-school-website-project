@@ -27,7 +27,6 @@ const AttendanceHistory = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [studentSummary, setStudentSummary] = useState([]);
 
-  // ✅ Filter students by class
   const filteredStudents = useMemo(() => {
     return students.filter(s => s.class === String(selectedClass));
   }, [selectedClass]);
@@ -67,14 +66,19 @@ const AttendanceHistory = () => {
             };
           });
 
+          // ✅ FIXED MONTH FILTER
+          const [year, month] = selectedMonth.split('-');
+          const startDate = `${year}-${month}-01`;
+          const endDate = `${year}-${month}-31`;
+
           await Promise.all(
             filteredStudents.map(async (student) => {
               const ref = collection(db, 'attendance', String(student.id), 'records');
 
               const q = query(
                 ref,
-                where('__name__', '>=', selectedMonth + '-01'),
-                where('__name__', '<=', selectedMonth + '-31')
+                where('__name__', '>=', startDate),
+                where('__name__', '<=', endDate)
               );
 
               const snap = await getDocs(q);
@@ -107,10 +111,9 @@ const AttendanceHistory = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
 
-      {/* Header */}
       <h1 className="text-2xl font-bold">Attendance Dashboard</h1>
 
-      {/* ✅ CLASS SELECTOR */}
+      {/* CLASS SELECTOR */}
       <div className="flex gap-2 flex-wrap">
         {['1', '2', '3', '4'].map(cls => (
           <button
@@ -126,6 +129,21 @@ const AttendanceHistory = () => {
           </button>
         ))}
       </div>
+
+      {/* ✅ MONTH SELECTOR (ONLY NEW UI) */}
+      {viewMode === 'monthly' && (
+        <div className="bg-white p-4 rounded-xl shadow flex items-center gap-4">
+          <label className="text-sm font-medium text-gray-600">
+            Select Month:
+          </label>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="border px-3 py-2 rounded-lg"
+          />
+        </div>
+      )}
 
       {/* Toggle */}
       <div className="flex gap-2">
@@ -180,7 +198,6 @@ const AttendanceHistory = () => {
             </div>
           ) : (
             <>
-              {/* Graph */}
               <div className="bg-white p-6 rounded-2xl shadow">
                 <h2 className="font-semibold mb-4">Student Attendance Chart</h2>
 
@@ -196,7 +213,6 @@ const AttendanceHistory = () => {
                 </ResponsiveContainer>
               </div>
 
-              {/* Student Summary */}
               <div className="bg-white p-6 rounded-2xl shadow">
                 <h2 className="font-semibold mb-4">Student Performance</h2>
 
