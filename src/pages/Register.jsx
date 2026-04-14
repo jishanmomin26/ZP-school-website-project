@@ -85,16 +85,10 @@ const Register = () => {
         });
 
         if (result.success) {
-          toast.success('Teacher registered 🎉');
+          toast.success('Registration successful! Please login.');
 
-          loginWithFirebase({
-            email: result.user.email,
-            name: form.name
-          }, 'teacher');
-
-          navigate('/dashboard/teacher');
+          navigate('/login');
         }
-
       } else {
         result = await registerParent({
           name: form.name.trim(),
