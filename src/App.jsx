@@ -35,6 +35,7 @@ import ManageStudents from './pages/dashboard/teacher/ManageStudents';
 import EventPhotoUpload from "./pages/dashboard/teacher/EventPhotoUpload";
 import MidDayMeal from './pages/dashboard/teacher/MidDayMeal';
 
+
 // Parent Dashboard
 import ParentDashboard from './pages/dashboard/parent/ParentDashboard';
 
@@ -121,6 +122,7 @@ function App() {
               <Route path="manage-students" element={<ManageStudents />} />
               <Route path="event-photos" element={<EventPhotoUpload />} />
               <Route path="mid-day-meal" element={<MidDayMeal />} />
+
             </Route>
 
             {/* Parent Dashboard */}
