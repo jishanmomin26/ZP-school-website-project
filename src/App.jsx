@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/dashboard/DashboardLayout';
+import EventSlider from "./components/EventSlider";
 
 // Public Pages
 import Home from './pages/Home';
@@ -31,6 +32,7 @@ import DefaulterList from './pages/dashboard/teacher/DefaulterList';
 import UploadResults from './pages/dashboard/teacher/UploadResults';
 import Notices from './pages/dashboard/teacher/Notices';
 import ManageStudents from './pages/dashboard/teacher/ManageStudents';
+import EventPhotoUpload from "./pages/dashboard/teacher/EventPhotoUpload";
 
 // Parent Dashboard
 import ParentDashboard from './pages/dashboard/parent/ParentDashboard';
@@ -116,6 +118,7 @@ function App() {
               <Route path="upload-results" element={<UploadResults />} />
               <Route path="notices" element={<Notices />} />
               <Route path="manage-students" element={<ManageStudents />} />
+              <Route path="event-photos" element={<EventPhotoUpload />} />
             </Route>
 
             {/* Parent Dashboard */}

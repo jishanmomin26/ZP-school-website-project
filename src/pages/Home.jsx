@@ -4,6 +4,7 @@ import { FaGraduationCap, FaClipboardCheck, FaChartLine, FaHandHoldingHeart, FaU
 import { useLanguage } from '../context/LanguageContext';
 import { notices, galleryImages } from '../data/dummyData';
 import PageTransition from '../components/PageTransition';
+import EventSlider from "../components/EventSlider";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -161,7 +162,7 @@ const Home = () => {
               className="relative"
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="/images/school-2.jpg" alt="School" className="w-full h-80 lg:h-96 object-cover" />
+                <EventSlider />
                 <div className="absolute inset-0 bg-gradient-to-t from-dark-900/30 to-transparent" />
               </div>
               <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-accent-400 rounded-2xl -z-10" />

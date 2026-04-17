@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { FaBullseye, FaEye, FaTrophy, FaGraduationCap, FaMedal, FaAward, FaLaptop, FaQuoteLeft } from 'react-icons/fa';
 import { useLanguage } from '../context/LanguageContext';
 import PageTransition from '../components/PageTransition';
+import EventSlider from "../components/EventSlider";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
