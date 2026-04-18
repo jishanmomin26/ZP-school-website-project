@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  PARENT
+}
+
+model User {
+  id            String    @id @default(cuid())
+  firebaseUid   String    @unique
+  email         String?   @unique
+  name          String
+  phone         String?
+  role          UserRole  @default(PARENT)
+  parentId      String?   @unique   // For parent login (e.g. PARENT001)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  parentProfile ParentProfile?
+  notices       Notice[]
+  donations     Donation[]
+
+  @@index([firebaseUid])
+  @@index([role])
+}
+
+model ParentProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  studentName   String
+  studentClass  String
+  studentRoll   Int?
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Student {
+  id            Int      @id @default(autoincrement())
+  name          String
+  class         String
+  rollNumber    Int
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  attendances   AttendanceRecord[]
+  results       Result[]
+
+  @@unique([class, rollNumber])
+  @@index([class])
+}
+
+model AttendanceRecord {
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  date          DateTime @db.Date
+  isPresent     Boolean
+  markedBy      String?   // userId of teacher
+  createdAt     DateTime @default(now())
+
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
+  @@index([date, studentId])
+  @@index([date])
+}
+
+model Result {
+  id            Int      @id @default(autoincrement())
+  studentId     Int
+  examType      String    // UT1, UT2, Semester 1, Semester 2
+  marathi       Int?
+  english       Int?
+  maths         Int?
+  evs           Int?
+  uploadedBy    String?   // userId of teacher
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examType])
+  @@index([studentId])
+  @@index([examType])
+}
+
+model Notice {
+  id            Int      @id @default(autoincrement())
+  title         String
+  content       String   @db.Text
+  date          DateTime @db.Date
+  isImportant   Boolean  @default(false)
+  createdBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  creator       User?    @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([date])
+  @@index([isImportant])
+}
+
+model Donation {
+  id            Int      @id @default(autoincrement())
+  donorName     String
+  phone         String
+  amount        Decimal  @db.Decimal(10, 2)
+  purpose       String
+  message       String?  @db.Text
+  donorUserId   String?
+  createdAt     DateTime @default(now())
+
+  donor         User?    @relation(fields: [donorUserId], references: [id], onDelete: SetNull)
+
+  @@index([purpose])
+  @@index([createdAt])
+}
+
+model ContactMessage {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String
+  subject       String
+  message       String   @db.Text
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([isRead])
+  @@index([createdAt])
+}
