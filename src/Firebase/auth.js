@@ -15,9 +15,9 @@ import {
 import { auth, db } from './config.js';
 
 
-// ======================
+// //=======//=======//========
 // 🔐 REGISTER TEACHER
-// ======================
+// //=======//=======//========
 export const registerTeacher = async ({ name, email, password }) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -39,9 +39,9 @@ export const registerTeacher = async ({ name, email, password }) => {
 };
 
 
-// ======================
+// //=======//=======//========
 // 👨‍👩‍👧 REGISTER PARENT
-// ======================
+// //=======//=======//========
 export const registerParent = async ({ name, email, password, parentId }) => {
   try {
     parentId = parentId.trim().toUpperCase(); // 🔥 normalize
@@ -65,7 +65,7 @@ export const registerParent = async ({ name, email, password, parentId }) => {
       name: name || '',
       email,
       parentId,
-      studentId: null, 
+      studentId: null,
       role: 'parent',
       createdAt: new Date().toISOString()
     });
@@ -78,9 +78,9 @@ export const registerParent = async ({ name, email, password, parentId }) => {
 };
 
 
-// ======================
+// //=======//=======//========
 // 👨‍🏫 LOGIN TEACHER
-// ======================
+// //=======//=======//========
 export const loginTeacher = async ({ email, password }) => {
   try {
     email = email.trim();
@@ -101,9 +101,9 @@ export const loginTeacher = async ({ email, password }) => {
 };
 
 
-// ======================
+// //=======//=======//========
 // 👨‍👩‍👧 LOGIN PARENT
-// ======================
+// //=======//=======//========
 export const loginParent = async ({ parentId, password }) => {
   try {
     parentId = parentId.trim().toUpperCase(); // 🔥 normalize
@@ -142,9 +142,9 @@ export const loginParent = async ({ parentId, password }) => {
 };
 
 
-// ======================
+// //=======//=======//========
 // 🚪 LOGOUT
-// ======================
+// //=======//=======//========
 export const logoutUser = async () => {
   try {
     await signOut(auth);
@@ -155,9 +155,9 @@ export const logoutUser = async () => {
 };
 
 
-// ======================
+// //=======//=======//========
 // ⚠️ ERROR HANDLER
-// ======================
+// //=======//=======//========
 const getFirebaseErrorMessage = (code) => {
   switch (code) {
     case 'auth/email-already-in-use':
