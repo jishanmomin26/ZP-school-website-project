@@ -147,13 +147,11 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div {...fadeInUp}>
-
               <span className="inline-block px-3 py-1 bg-primary-50 text-primary-600 text-sm font-semibold rounded-full mb-4">
                 {t('events_tag')}
               </span>
               <h2 className="section-title mb-6">{t('events_title')}</h2>
               <p className="text-dark-500 leading-relaxed">{t('events_text')}</p>
-
             </motion.div>
             <motion.div
               {...fadeInUp}
