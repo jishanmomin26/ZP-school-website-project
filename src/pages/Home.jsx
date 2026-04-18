@@ -147,11 +147,13 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div {...fadeInUp}>
+
               <span className="inline-block px-3 py-1 bg-primary-50 text-primary-600 text-sm font-semibold rounded-full mb-4">
                 {t('events_tag')}
               </span>
               <h2 className="section-title mb-6">{t('events_title')}</h2>
               <p className="text-dark-500 leading-relaxed">{t('events_text')}</p>
+
             </motion.div>
             <motion.div
               {...fadeInUp}
@@ -208,9 +210,8 @@ const Home = () => {
                 key={notice.id}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className={`bg-white rounded-xl p-5 border-l-4 ${
-                  notice.important ? 'border-l-accent-500' : 'border-l-primary-500'
-                } shadow-sm hover:shadow-md transition-shadow duration-300`}
+                className={`bg-white rounded-xl p-5 border-l-4 ${notice.important ? 'border-l-accent-500' : 'border-l-primary-500'
+                  } shadow-sm hover:shadow-md transition-shadow duration-300`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
@@ -249,9 +250,8 @@ const Home = () => {
                 key={img.id}
                 {...stagger}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className={`group relative rounded-xl overflow-hidden cursor-pointer ${
-                  i === 0 ? 'md:col-span-2 md:row-span-2' : ''
-                }`}
+                className={`group relative rounded-xl overflow-hidden cursor-pointer ${i === 0 ? 'md:col-span-2 md:row-span-2' : ''
+                  }`}
               >
                 <img
                   src={img.src}
