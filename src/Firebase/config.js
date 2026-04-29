@@ -11,8 +11,25 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
+// Check if Firebase credentials are configured
+const hasValidConfig = firebaseConfig.apiKey && firebaseConfig.apiKey !== 'undefined';
 
-export { app };
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+let app = null;
+let db = null;
+let auth = null;
+
+if (hasValidConfig) {
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+  } catch (error) {
+    console.warn('Firebase initialization failed:', error.message);
+  }
+} else {
+  console.warn(
+    'Firebase not configured. Create a .env file with VITE_FIREBASE_* variables to enable authentication and database features.'
+  );
+}
+
+export { app, db, auth };

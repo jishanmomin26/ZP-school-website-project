@@ -124,6 +124,18 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ===== YouTube Player Fix ===== */
+/* react-youtube wraps the iframe in a div; force it to fill its parent */
+.anti-skip-player-wrapper > div {
+  width: 100%;
+  height: 100%;
+}
+
+.anti-skip-player-wrapper iframe {
+  width: 100%;
+  height: 100%;
+}
+
 /* ===== Animation Delays ===== */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }

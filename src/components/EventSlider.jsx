@@ -7,6 +7,7 @@ export default function EventSlider() {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
+    if (!db) return; // Firebase not configured
     const unsubscribe = onSnapshot(
       doc(db, "currentEvents", "latest"),
       (snapshot) => {
@@ -14,6 +15,9 @@ export default function EventSlider() {
           setImages(snapshot.data().images || []);
           setCurrent(0);
         }
+      },
+      (error) => {
+        console.warn("EventSlider: Firestore error", error.message);
       }
     );
 

@@ -102,7 +102,7 @@ function App() {
             <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
             <Route path="/video-lectures" element={<PublicLayout><VideoLectures /></PublicLayout>} />
-            <Route path="/video-lectures/:id" element={<PublicLayout><LecturePlayer /></PublicLayout>} />
+            <Route path="/video-lectures/:id" element={<LecturePlayer />} />
 
             {/* Auth Pages */}
             <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
