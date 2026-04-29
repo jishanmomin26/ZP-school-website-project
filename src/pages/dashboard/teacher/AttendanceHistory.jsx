@@ -41,8 +41,12 @@ const AttendanceHistory = () => {
     return students.filter(s => s.class === String(selectedClass));
   }, [students, selectedClass]);
 
+  // ✅ FIXED USE EFFECT
   useEffect(() => {
     const fetchData = async () => {
+
+      if (filteredStudents.length === 0) return; // ✅ IMPORTANT FIX
+
       setLoading(true);
 
       try {
@@ -76,10 +80,11 @@ const AttendanceHistory = () => {
             };
           });
 
-          // ✅ FIXED MONTH FILTER
           const [year, month] = selectedMonth.split('-');
           const startDate = `${year}-${month}-01`;
-          const endDate = `${year}-${month}-31`;
+
+          // ✅ FIXED END DATE
+          const endDate = new Date(year, month, 0).toISOString().split('T')[0];
 
           await Promise.all(
             filteredStudents.map(async (student) => {
@@ -116,14 +121,14 @@ const AttendanceHistory = () => {
     };
 
     fetchData();
-  }, [selectedClass, selectedDate, selectedMonth, viewMode]);
+
+  }, [filteredStudents, selectedDate, selectedMonth, viewMode]); // ✅ KEY FIX
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
 
       <h1 className="text-2xl font-bold">Attendance Dashboard</h1>
 
-      {/* CLASS SELECTOR */}
       <div className="flex gap-2 flex-wrap">
         {['1', '2', '3', '4'].map(cls => (
           <button
@@ -139,7 +144,6 @@ const AttendanceHistory = () => {
         ))}
       </div>
 
-      {/* ✅ MONTH SELECTOR (ONLY NEW UI) */}
       {viewMode === 'monthly' && (
         <div className="bg-white p-4 rounded-xl shadow flex items-center gap-4">
           <label className="text-sm font-medium text-gray-600">
@@ -154,7 +158,6 @@ const AttendanceHistory = () => {
         </div>
       )}
 
-      {/* Toggle */}
       <div className="flex gap-2">
         <button
           onClick={() => setViewMode('daily')}
@@ -177,7 +180,6 @@ const AttendanceHistory = () => {
         </button>
       </div>
 
-      {/* Loading */}
       {loading ? (
         <div className="text-center py-10">Loading...</div>
       ) : (
