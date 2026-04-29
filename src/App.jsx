@@ -36,6 +36,7 @@ import Notices from './pages/dashboard/teacher/Notices';
 import ManageStudents from './pages/dashboard/teacher/ManageStudents';
 import EventPhotoUpload from "./pages/dashboard/teacher/EventPhotoUpload";
 import MidDayMeal from './pages/dashboard/teacher/MidDayMeal';
+import DonationRequests from './pages/dashboard/teacher/DonationRequests';
 
 
 // Parent Dashboard
@@ -126,7 +127,8 @@ function App() {
               <Route path="manage-students" element={<ManageStudents />} />
               <Route path="event-photos" element={<EventPhotoUpload />} />
               <Route path="mid-day-meal" element={<MidDayMeal />} />
-
+              <Route path="donation-requests" element={<DonationRequests />} />
+              
             </Route>
 
             {/* Parent Dashboard */}

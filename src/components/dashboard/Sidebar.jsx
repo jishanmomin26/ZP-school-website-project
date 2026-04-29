@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { FaChartPie, FaClipboardCheck, FaHistory, FaExclamationTriangle, FaUpload, FaBullhorn, FaSignOutAlt, FaBars, FaTimes, FaSchool, FaHome, FaUtensils } from 'react-icons/fa';
+import { FaChartPie, FaClipboardCheck, FaHistory, FaExclamationTriangle, FaUpload, FaBullhorn, FaSignOutAlt, FaBars, FaTimes, FaSchool, FaHome, FaUtensils, FaHeart } from 'react-icons/fa';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { FaUserGraduate } from "react-icons/fa";
@@ -23,6 +23,7 @@ const Sidebar = () => {
     { path: '/dashboard/teacher/manage-students', icon: FaUserGraduate, label: "Manage Students" },
     { path: '/dashboard/teacher/event-photos', icon: FaImage, label: "Event Photos" },
     { path: '/dashboard/teacher/mid-day-meal', icon: FaUtensils, label: t('dash_mid_day_meal') },
+    { path: '/dashboard/teacher/donation-requests', icon: FaHeart, label: 'Donation Requests' },
   ];
 
   const handleLogout = () => {
