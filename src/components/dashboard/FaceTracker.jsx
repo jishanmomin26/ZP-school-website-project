@@ -92,7 +92,7 @@ const FaceTracker = ({ onTimeout, onPermissionError, onReady, isActive, isVideoP
         streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-  }, [isActive, isVideoPlaying, onTimeout, onPermissionError]);
+  }, [isActive, isVideoPlaying, onTimeout, onPermissionError, onReady]);
 
   if (!isActive) return null;
 

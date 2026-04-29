@@ -92,7 +92,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap"
           >
             <Link to="/about" className="btn-outline border-white/30 text-white hover:bg-white hover:text-dark-900 backdrop-blur-sm">
               {t('hero_explore')}

@@ -215,6 +215,13 @@ const WatchLectures = () => {
     }
   };
 
+  const retryCameraAccess = () => {
+    setCameraError(null);
+    setIsCameraReady(false);
+    setShowCameraPermissionPrompt(false);
+    setCameraRetryCount((prev) => prev + 1);
+  };
+
   // Group lectures by subject
   const groupedLectures = lectures.reduce((acc, lecture) => {
     const sub = lecture.subject || 'Other';
@@ -297,7 +304,7 @@ const WatchLectures = () => {
                             </span>
                           </div>
                           <div className="h-1.5 bg-dark-50 rounded-full overflow-hidden">
-                            <div className="h-full bg-primary-100" style={{ width: '100%' }} />
+                            <div className="h-full bg-primary-500 transition-all duration-500" style={{ width: `${lectureProgress}%` }} />
                           </div>
                         </div>
                       </div>

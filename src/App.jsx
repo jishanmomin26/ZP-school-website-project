@@ -23,6 +23,8 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NotFound from './pages/NotFound';
+import VideoLectures from './pages/VideoLectures';
+import LecturePlayer from './pages/LecturePlayer';
 
 // Teacher Dashboard Pages
 import TeacherOverview from './pages/dashboard/teacher/TeacherOverview';
@@ -99,6 +101,8 @@ function App() {
             <Route path="/donate" element={<PublicLayout><Donate /></PublicLayout>} />
             <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
             <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+            <Route path="/video-lectures" element={<PublicLayout><VideoLectures /></PublicLayout>} />
+            <Route path="/video-lectures/:id" element={<PublicLayout><LecturePlayer /></PublicLayout>} />
 
             {/* Auth Pages */}
             <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />

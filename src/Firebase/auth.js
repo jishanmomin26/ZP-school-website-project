@@ -131,7 +131,7 @@ export const loginParent = async ({ parentId, password }) => {
 
     const user = userCredential.user;
 
-    return { success: true, user, userData: parentData };
+    return { success: true, user, userData: parentData, parentId: parentData.parentId };
 
   } catch (error) {
     if (error.code === 'auth/wrong-password') {

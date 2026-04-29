@@ -35,6 +35,7 @@ const Navbar = () => {
     { path: '/', label: t('nav_home') },
     { path: '/about', label: t('nav_about') },
     { path: '/donate', label: t('nav_donate') },
+    { path: '/video-lectures', label: 'Lectures' },
     { path: 'https://books.ebalbharati.in/', label: t('nav_study_material'), external: true },
     { path: '/help', label: t('nav_help') },
     { path: '/contact', label: t('nav_contact') },
@@ -54,28 +55,39 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'bg-white/90 backdrop-blur-lg shadow-lg shadow-dark-900/5 border-b border-dark-100'
-            : 'bg-white/70 backdrop-blur-md'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+          ? 'bg-white/90 backdrop-blur-lg shadow-lg shadow-dark-900/5 border-b border-dark-100'
+          : 'bg-white/70 backdrop-blur-md'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-18">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 group">
+            <Link
+              to="/"
+              className="flex items-center gap-3 min-w-[230px] xl:min-w-[260px] flex-shrink-0 group"
+            >
               <img
                 src="/edusync-logo.jpg"
                 alt="School Logo"
-                className="w-10 h-10 rounded-full object-cover shadow-md group-hover:shadow-lg transition-shadow duration-300"
+                className="w-11 h-11 rounded-full object-cover shadow-md group-hover:shadow-lg transition-shadow duration-300"
               />
-              <span className="font-poppins font-bold text-lg text-dark-800 hidden sm:block group-hover:text-primary-600 transition-colors duration-200">
-                {t('nav_school_name')}
-              </span>
+
+              <div className="hidden sm:flex flex-col leading-[1.05]">
+                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
+                  RZP
+                </span>
+                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
+                  School
+                </span>
+                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
+                  Kudave
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1 whitespace-nowrap ml-4 xl:ml-6">
               {navLinks.map((link) => (
                 link.external ? (
                   <a
@@ -91,11 +103,10 @@ const Navbar = () => {
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      isActive(link.path)
-                        ? 'bg-primary-50 text-primary-600'
-                        : 'text-dark-600 hover:bg-dark-50 hover:text-dark-900'
-                    }`}
+                    className={`px-2.5 xl:px-3.5 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${isActive(link.path)
+                      ? 'bg-primary-50 text-primary-600'
+                      : 'text-dark-600 hover:bg-dark-50 hover:text-dark-900'
+                      }`}
                   >
                     {link.label}
                   </Link>
@@ -139,11 +150,10 @@ const Navbar = () => {
                             setLanguage(lang.code);
                             setIsLangOpen(false);
                           }}
-                          className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors duration-150 ${
-                            language === lang.code
-                              ? 'bg-primary-50 text-primary-600 font-semibold'
-                              : 'text-dark-600 hover:bg-dark-50'
-                          }`}
+                          className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors duration-150 ${language === lang.code
+                            ? 'bg-primary-50 text-primary-600 font-semibold'
+                            : 'text-dark-600 hover:bg-dark-50'
+                            }`}
                         >
                           <span>{lang.flag}</span>
                           <span>{lang.label}</span>
@@ -237,11 +247,10 @@ const Navbar = () => {
                     <Link
                       key={link.path}
                       to={link.path}
-                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                        isActive(link.path)
-                          ? 'bg-primary-50 text-primary-600'
-                          : 'text-dark-600 hover:bg-dark-50'
-                      }`}
+                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${isActive(link.path)
+                        ? 'bg-primary-50 text-primary-600'
+                        : 'text-dark-600 hover:bg-dark-50'
+                        }`}
                     >
                       {link.label}
                     </Link>
