@@ -4,6 +4,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { db } from '../../../Firebase/config';
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 import { getGrade } from '../../../data/dummyData';
+import { FaHome, FaSignOutAlt } from "react-icons/fa";
 
 const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
@@ -166,13 +167,9 @@ const ParentDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 space-y-6">
+    <div className="min-h-screen bg-gray-100 p-6 space-y-6 pb-24">
 
-      {/* TOP BAR */}
-      <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow">
-        <h2 className="font-bold text-lg">{user?.name}</h2>
-        <button onClick={handleLogout} className="text-red-500">Logout</button>
-      </div>
+      
 
       {/* STUDENT */}
       {studentData && (
@@ -199,7 +196,7 @@ const ParentDashboard = () => {
             }
             className="px-4 py-2 rounded-full bg-gray-100"
           >
-            {["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map((m,i)=>(
+            {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((m, i) => (
               <option key={i} value={i}>{m}</option>
             ))}
           </select>
@@ -255,15 +252,14 @@ const ParentDashboard = () => {
           {calendarDays.map(day => (
             <div
               key={day.key}
-              className={`p-2 rounded-lg ${
-                day.empty
-                  ? ''
-                  : day.status === 'present'
+              className={`p-2 rounded-lg ${day.empty
+                ? ''
+                : day.status === 'present'
                   ? 'bg-green-100'
                   : day.status === 'absent'
-                  ? 'bg-red-100'
-                  : 'bg-gray-100'
-              }`}
+                    ? 'bg-red-100'
+                    : 'bg-gray-100'
+                }`}
             >
               {day.date || ''}
             </div>
@@ -310,6 +306,26 @@ const ParentDashboard = () => {
         )}
       </div>
 
+      {/* 🔥 Bottom Navigation (Home + Logout) */}
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-md flex justify-around py-3">
+
+        <button
+          onClick={() => navigate('/')}
+          className="flex flex-col items-center text-blue-600 hover:text-blue-800 transition"
+        >
+          <FaHome className="text-xl mb-1" />
+          <span className="text-sm font-medium">Home</span>
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center text-red-500 hover:text-red-700 transition"
+        >
+          <FaSignOutAlt className="text-xl mb-1" />
+          <span className="text-sm font-medium">Logout</span>
+        </button>
+
+      </div>
     </div>
   );
 };
