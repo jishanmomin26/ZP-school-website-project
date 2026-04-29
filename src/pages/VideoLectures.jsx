@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaGraduationCap } from 'react-icons/fa';
+import { FaGraduationCap, FaSync, FaExclamationTriangle } from 'react-icons/fa';
 import PageTransition from '../components/PageTransition';
-import { lecturesData } from '../data/lectures';
 import LectureCard from '../components/LectureCard';
+import useYouTubeVideos from '../hooks/useYouTubeVideos';
 
 const VideoLectures = () => {
+  const { videos, loading, error, refetch } = useYouTubeVideos();
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-dark-50 dark:bg-dark-900 pt-24 pb-20">
@@ -39,22 +41,77 @@ const VideoLectures = () => {
             </motion.p>
           </div>
 
-          {/* Grid Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-            {lecturesData.map((lecture, index) => (
-              <motion.div
-                key={lecture.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+          {/* Loading State */}
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+              {[...Array(8)].map((_, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  className="bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-lg border border-dark-100 dark:border-dark-700"
+                >
+                  {/* Thumbnail skeleton */}
+                  <div className="relative aspect-video bg-dark-200 dark:bg-dark-700 animate-pulse">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent shimmer" />
+                  </div>
+                  {/* Progress bar skeleton */}
+                  <div className="w-full h-1.5 bg-dark-200 dark:bg-dark-700" />
+                  {/* Content skeleton */}
+                  <div className="p-5 space-y-3">
+                    <div className="h-3 w-20 bg-dark-200 dark:bg-dark-700 rounded animate-pulse" />
+                    <div className="h-5 w-full bg-dark-200 dark:bg-dark-700 rounded animate-pulse" />
+                    <div className="h-5 w-3/4 bg-dark-200 dark:bg-dark-700 rounded animate-pulse" />
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="h-4 w-24 bg-dark-200 dark:bg-dark-700 rounded animate-pulse" />
+                      <div className="h-9 w-24 bg-dark-200 dark:bg-dark-700 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-20 max-w-lg mx-auto"
+            >
+              <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FaExclamationTriangle className="text-3xl text-red-500" />
+              </div>
+              <h3 className="text-xl font-bold text-dark-800 dark:text-white mb-2">Failed to Load Lectures</h3>
+              <p className="text-dark-500 dark:text-dark-400 mb-6 text-sm leading-relaxed">{error}</p>
+              <button
+                onClick={refetch}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-primary-500/20"
               >
-                <LectureCard lecture={lecture} />
-              </motion.div>
-            ))}
-          </div>
+                <FaSync /> Try Again
+              </button>
+            </motion.div>
+          )}
+
+          {/* Grid Section */}
+          {!loading && !error && videos.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+              {videos.map((lecture, index) => (
+                <motion.div
+                  key={lecture.youtubeId}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <LectureCard lecture={lecture} />
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* Empty State Fallback (if no data) */}
-          {lecturesData.length === 0 && (
+          {!loading && !error && videos.length === 0 && (
             <div className="text-center py-20">
               <p className="text-dark-500 dark:text-dark-400 text-lg">No lectures available at the moment. Please check back later.</p>
             </div>

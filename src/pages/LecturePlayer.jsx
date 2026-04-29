@@ -3,14 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaExclamationTriangle, FaEye, FaUserSlash } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { lecturesData } from '../data/lectures';
+import useYouTubeVideos from '../hooks/useYouTubeVideos';
 import AntiSkipPlayer from '../components/AntiSkipPlayer';
 import WebcamTracker from '../components/WebcamTracker';
 
 const LecturePlayer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const lecture = lecturesData.find((l) => l.id === parseInt(id));
+  const { videos, loading } = useYouTubeVideos();
+  const lecture = videos.find((l) => l.youtubeId === id);
 
   const [isFacePresent, setIsFacePresent] = useState(true);
   const [distractionReason, setDistractionReason] = useState(null);
@@ -19,7 +20,7 @@ const LecturePlayer = () => {
 
   useEffect(() => {
     if (!lecture) return;
-    const storedData = localStorage.getItem(`lectureProgress_${lecture.id}`);
+    const storedData = localStorage.getItem(`lectureProgress_${lecture.youtubeId}`);
     if (storedData) {
       try {
         const parsed = JSON.parse(storedData);
@@ -52,12 +53,12 @@ const LecturePlayer = () => {
     if (!lecture) return;
     const isCompleted = percentage >= 95;
     const progressData = {
-      lectureId: lecture.id,
+      lectureId: lecture.youtubeId,
       watchedTime: currentTime,
       percentage: percentage,
       completed: isCompleted,
     };
-    localStorage.setItem(`lectureProgress_${lecture.id}`, JSON.stringify(progressData));
+    localStorage.setItem(`lectureProgress_${lecture.youtubeId}`, JSON.stringify(progressData));
   }, [lecture]);
 
   // Get contextual distraction message
@@ -107,6 +108,18 @@ const LecturePlayer = () => {
         };
     }
   };
+
+  // Show loading while fetching videos from YouTube API
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-white text-lg font-semibold">Loading lecture...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!lecture) {
     return <div className="min-h-screen flex items-center justify-center text-white">Lecture not found</div>;

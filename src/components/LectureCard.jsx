@@ -9,7 +9,7 @@ const LectureCard = ({ lecture }) => {
 
   useEffect(() => {
     try {
-      const storedData = localStorage.getItem(`lectureProgress_${lecture.id}`);
+      const storedData = localStorage.getItem(`lectureProgress_${lecture.youtubeId}`);
       if (storedData) {
         const parsed = JSON.parse(storedData);
         setProgress(parsed.percentage || 0);
@@ -18,7 +18,7 @@ const LectureCard = ({ lecture }) => {
     } catch (e) {
       console.error('Error parsing progress data', e);
     }
-  }, [lecture.id]);
+  }, [lecture.youtubeId]);
 
   return (
     <motion.div
@@ -79,7 +79,7 @@ const LectureCard = ({ lecture }) => {
             {progress > 0 && !isCompleted ? `${Math.round(progress)}% Watched` : isCompleted ? 'Completed' : 'Not Started'}
           </div>
           <Link
-            to={`/video-lectures/${lecture.id}`}
+            to={`/video-lectures/${lecture.youtubeId}`}
             className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
               isCompleted 
                 ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100'
