@@ -11,17 +11,23 @@ const DISTRACTION_PAUSE_SEC = 5;
 const FACE_MISSING_PAUSE_SEC = 5;
 const DETECTION_INTERVAL_MS = 600;
 
-// Head-pose geometry (normalised ratios)
-const HORIZ_THRESHOLD = 0.30;
-const VERT_DOWN_THRESHOLD = 0.58;
-const VERT_UP_THRESHOLD = 0.30;
+// Head-pose geometry thresholds (normalised ratios)
+// IMPORTANT: These are intentionally WIDE to avoid false positives.
+// A normal forward gaze has offsetX ~0 and dropRatio ~0.45.
+// Only clear, deliberate head turns should trigger distraction.
+const HORIZ_THRESHOLD = 0.45;         // nose must be WAY off center → clear left/right turn
+const VERT_DOWN_THRESHOLD = 0.70;     // nose must drop significantly → clearly looking down
 
-// For resume: use a "forward count" approach instead of continuous timer
-// Student must have 2 consecutive forward detections (~1.2 s) to resume
+// Require N consecutive non-forward detections before starting the timer.
+// This filters out momentary glitches from face landmark jitter.
+const DISTRACTION_CONFIRM_COUNT = 3;
+
+// For resume: student must have 2 consecutive forward detections (~1.2 s)
 const FORWARD_COUNT_TO_RESUME = 2;
 
 /**
  * Estimate gaze direction from 68-point face landmarks.
+ * Only detects CLEAR head turns — normal screen-watching posture → 'forward'.
  */
 const estimateDirection = (landmarks) => {
   const pts = landmarks.positions;
@@ -39,10 +45,10 @@ const estimateDirection = (landmarks) => {
   const faceH     = chin.y - noseBridge.y;
   const dropRatio = (noseTip.y - noseBridge.y) / faceH;
 
+  // Only flag clear, deliberate head turns
   if (offsetX < -HORIZ_THRESHOLD) return 'looking_right';
   if (offsetX >  HORIZ_THRESHOLD) return 'looking_left';
   if (dropRatio > VERT_DOWN_THRESHOLD) return 'looking_down';
-  if (dropRatio < VERT_UP_THRESHOLD)   return 'looking_up';
 
   return 'forward';
 };
@@ -62,6 +68,7 @@ const WebcamTracker = ({ onFaceStatusChange, onDistractionChange, onReady, onErr
   const distractedSince   = useRef(null);
   const missingSince      = useRef(null);
   const forwardCount      = useRef(0);       // consecutive forward detections
+  const distractionCount  = useRef(0);       // consecutive non-forward detections (filter noise)
   const isPausedRef       = useRef(false);
 
   // Store latest callbacks in refs so the interval never goes stale
@@ -148,6 +155,7 @@ const WebcamTracker = ({ onFaceStatusChange, onDistractionChange, onReady, onErr
 
           if (dir === 'forward') {
             // ── Looking at screen ──
+            distractionCount.current = 0;   // reset noise filter
             distractedSince.current = null;
 
             if (isPausedRef.current) {
@@ -167,14 +175,19 @@ const WebcamTracker = ({ onFaceStatusChange, onDistractionChange, onReady, onErr
           } else {
             // ── Looking away ──
             forwardCount.current = 0;  // reset forward counter
+            distractionCount.current += 1;
 
-            if (!distractedSince.current) {
-              distractedSince.current = now;
-            }
+            // Only start the timer after DISTRACTION_CONFIRM_COUNT
+            // consecutive non-forward detections (filters jitter)
+            if (distractionCount.current >= DISTRACTION_CONFIRM_COUNT) {
+              if (!distractedSince.current) {
+                distractedSince.current = now;
+              }
 
-            const elapsed = (now - distractedSince.current) / 1000;
-            if (elapsed >= DISTRACTION_PAUSE_SEC) {
-              doPause(dir);
+              const elapsed = (now - distractedSince.current) / 1000;
+              if (elapsed >= DISTRACTION_PAUSE_SEC) {
+                doPause(dir);
+              }
             }
 
             setStatusColor(isPausedRef.current ? 'red' : 'amber');
@@ -210,7 +223,6 @@ const WebcamTracker = ({ onFaceStatusChange, onDistractionChange, onReady, onErr
       case 'looking_left':  return '👈 Looking Left';
       case 'looking_right': return '👉 Looking Right';
       case 'looking_down':  return '👇 Looking Down';
-      case 'looking_up':    return '👆 Looking Up';
       case 'absent':        return '⛔ Missing';
       default:              return '✅ Focused';
     }
