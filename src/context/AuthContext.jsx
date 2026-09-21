@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
-        role: firebaseUser.email === "rzpschoolkudave1956@gmail.com"
+        role: (firebaseUser.email === "rzpschool1956@gmail.com" || firebaseUser.email === "rzpschoolkudave1956@gmail.com")
           ? "teacher"
           : "parent",
       };

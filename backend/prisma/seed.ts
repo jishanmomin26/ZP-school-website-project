@@ -6,11 +6,11 @@ async function main() {
 
   // Create admin user
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@zpkudave.edu.in' },
+    where: { email: 'admin@zpschool.edu.in' },
     update: {},
     create: {
       firebaseUid: 'mock-admin-uid-123', // In a real app this would be an actual firebase uid
-      email: 'admin@zpkudave.edu.in',
+      email: 'admin@zpschool.edu.in',
       name: 'System Admin',
       role: 'ADMIN',
     },
@@ -18,12 +18,12 @@ async function main() {
 
   // Create demo teacher
   const teacher = await prisma.user.upsert({
-    where: { email: 'teacher@zpkudave.edu.in' },
+    where: { email: 'teacher@zpschool.edu.in' },
     update: {},
     create: {
       firebaseUid: 'mock-teacher-uid-456',
-      email: 'teacher@zpkudave.edu.in',
-      name: 'Sou. Ranjita Pardeshi',
+      email: 'teacher@zpschool.edu.in',
+      name: 'Sou. Sushmita Pawar',
       role: 'TEACHER',
     },
   });

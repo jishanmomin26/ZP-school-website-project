@@ -85,8 +85,8 @@ export const loginTeacher = async ({ email, password }) => {
   try {
     email = email.trim();
 
-    // 🔒 Restrict to one teacher
-    if (email !== "rzpschoolkudave1956@gmail.com") {
+    // 🔒 Restrict to authorized teacher
+    if (email !== "rzpschool1956@gmail.com" && email !== "rzpschoolkudave1956@gmail.com") {
       return { success: false, error: "Only authorized teacher can login." };
     }
 

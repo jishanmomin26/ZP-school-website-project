@@ -73,15 +73,9 @@ const Navbar = () => {
                 className="w-11 h-11 rounded-full object-cover shadow-md group-hover:shadow-lg transition-shadow duration-300"
               />
 
-              <div className="hidden sm:flex flex-col leading-[1.05]">
-                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
-                  RZP
-                </span>
-                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
-                  School
-                </span>
-                <span className="font-poppins font-bold text-[15px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
-                  Kudave
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="font-poppins font-bold text-[17px] text-dark-800 whitespace-nowrap group-hover:text-primary-600 transition-colors duration-200">
+                  {t('nav_school_name')}
                 </span>
               </div>
             </Link>

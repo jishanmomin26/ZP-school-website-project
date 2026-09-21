@@ -11,12 +11,12 @@ const translations = {
     nav_register: "Register",
     nav_dashboard: "Dashboard",
     nav_logout: "Logout",
-    nav_school_name: "RZP Kudave School",
+    nav_school_name: "ZP School",
 
     // Hero
-    hero_title: "Raigad Zilla Parishad School Kudave",
+    hero_title: "Raigad Zilla Parishad School",
     hero_subtitle: "Government Primary School | Classes 1st to 4th",
-    hero_location: "Kudave, Panvel, Raigad, Maharashtra",
+    hero_location: "Panvel, Raigad, Maharashtra",
     hero_explore: "Explore School",
     hero_donate: "Donate Now",
 
@@ -32,7 +32,7 @@ const translations = {
 
     // About Preview
     about_preview_title: "About Our School",
-    about_preview_text: "Raigad Zilla Parishad School Kudave is a government primary school dedicated to providing quality education to children in the rural areas of Panvel, Raigad district. Our school nurtures young minds from Class 1 to Class 4 with experienced teachers and a supportive learning environment.",
+    about_preview_text: "Raigad Zilla Parishad School is a government primary school dedicated to providing quality education to children in the rural areas of Panvel, Raigad district. Our school nurtures young minds from Class 1 to Class 4 with experienced teachers and a supportive learning environment.",
     about_read_more: "Read More",
 
     // School Events
@@ -70,12 +70,12 @@ const translations = {
     donation_cta_button: "Make a Donation",
 
     // Footer
-    footer_about: "Raigad Zilla Parishad School Kudave is committed to providing quality primary education. We nurture young minds and build a bright future for our students.",
+    footer_about: "Raigad Zilla Parishad School is committed to providing quality primary education. We nurture young minds and build a bright future for our students.",
     footer_quick_links: "Quick Links",
     footer_contact_info: "Contact Info",
-    footer_address: "Kudave, Panvel, Raigad, Maharashtra, India",
+    footer_address: "Panvel, Raigad, Maharashtra, India",
     footer_phone: "+91 9876543210",
-    footer_email: "rzpschoolkudave1956@gmail.com",
+    footer_email: "rzpschool1956@gmail.com",
     footer_rights: "All Rights Reserved",
     footer_made_with: "Made with ❤️ for Education",
 
@@ -96,9 +96,9 @@ const translations = {
     about_achievement_4: "Digital Classroom",
     about_achievement_4_desc: "Successfully implemented digital learning program.",
     about_principal_title: "Message from our Teacher",
-    about_principal_name: "Ranjita Sadanand Pardeshi",
+    about_principal_name: "Sushmita Pawar",
     about_principal_role: "Class Teacher",
-    about_principal_message: "At RZP Kudave School, we believe every child deserves quality education. Our dedicated team works tirelessly to create an engaging and nurturing learning environment. We welcome parents and community members to join us in this noble mission of shaping the future of our children.",
+    about_principal_message: "At ZP School, we believe every child deserves quality education. Our dedicated team works tirelessly to create an engaging and nurturing learning environment. We welcome parents and community members to join us in this noble mission of shaping the future of our children.",
 
     // Donate Page
     donate_title: "Support Our School",
@@ -142,7 +142,7 @@ const translations = {
     help_faq_5_q: "Can parents edit student data?",
     help_faq_5_a: "No, parents have view-only access. They can see attendance records, results, and student profile but cannot modify any data.",
     help_faq_6_q: "Who should I contact for technical issues?",
-    help_faq_6_a: "For any technical issues, please contact us through the Contact page or email us at rzpschoolkudave1956@gmail.com.",
+    help_faq_6_a: "For any technical issues, please contact us through the Contact page or email us at rzpschool1956@gmail.com.",
     help_guide_title: "Portal Usage Guide",
     help_guide_step1: "Register or Login with your role",
     help_guide_step2: "Navigate to your Dashboard",
@@ -288,12 +288,12 @@ const translations = {
     nav_register: "नोंदणी",
     nav_dashboard: "डॅशबोर्ड",
     nav_logout: "लॉगआउट",
-    nav_school_name: "जि. प. कुडावे शाळा",
+    nav_school_name: "जि. प. शाळा",
 
     // Hero
-    hero_title: "रायगड जिल्हा परिषद शाळा कुडावे",
+    hero_title: "रायगड जिल्हा परिषद शाळा",
     hero_subtitle: "सरकारी प्राथमिक शाळा | इयत्ता १ली ते ४थी",
-    hero_location: "कुडावे, पनवेल, रायगड, महाराष्ट्र",
+    hero_location: "पनवेल, रायगड, महाराष्ट्र",
     hero_explore: "शाळा पहा",
     hero_donate: "देणगी द्या",
 
@@ -309,7 +309,7 @@ const translations = {
 
     // About Preview
     about_preview_title: "आमच्या शाळेबद्दल",
-    about_preview_text: "रायगड जिल्हा परिषद शाळा कुडावे ही पनवेल, रायगड जिल्ह्यातील ग्रामीण भागातील मुलांना दर्जेदार शिक्षण देण्यासाठी समर्पित सरकारी प्राथमिक शाळा आहे. आमची शाळा अनुभवी शिक्षक आणि सहाय्यक शिक्षण वातावरणासह इयत्ता १ ते ४ पर्यंतच्या तरुण मनांना विकसित करते.",
+    about_preview_text: "रायगड जिल्हा परिषद शाळा ही पनवेल, रायगड जिल्ह्यातील ग्रामीण भागातील मुलांना दर्जेदार शिक्षण देण्यासाठी समर्पित सरकारी प्राथमिक शाळा आहे. आमची शाळा अनुभवी शिक्षक आणि सहाय्यक शिक्षण वातावरणासह इयत्ता १ ते ४ पर्यंतच्या तरुण मनांना विकसित करते.",
     about_read_more: "अधिक वाचा",
 
     // School Events
@@ -347,12 +347,12 @@ const translations = {
     donation_cta_button: "देणगी द्या",
 
     // Footer
-    footer_about: "रायगड जिल्हा परिषद शाळा कुडावे दर्जेदार प्राथमिक शिक्षण प्रदान करण्यासाठी वचनबद्ध आहे. आम्ही तरुण मनांना विकसित करतो आणि आमच्या विद्यार्थ्यांचे उज्ज्वल भविष्य घडवतो.",
+    footer_about: "रायगड जिल्हा परिषद शाळा दर्जेदार प्राथमिक शिक्षण प्रदान करण्यासाठी वचनबद्ध आहे. आम्ही तरुण मनांना विकसित करतो आणि आमच्या विद्यार्थ्यांचे उज्ज्वल भविष्य घडवतो.",
     footer_quick_links: "द्रुत दुवे",
     footer_contact_info: "संपर्क माहिती",
-    footer_address: "कुडावे, पनवेल, रायगड, महाराष्ट्र, भारत",
+    footer_address: "पनवेल, रायगड, महाराष्ट्र, भारत",
     footer_phone: "+91 9876543210",
-    footer_email: "rzpschoolkudave1956@gmail.com",
+    footer_email: "rzpschool1956@gmail.com",
     footer_rights: "सर्व हक्क राखीव",
     footer_made_with: "शिक्षणासाठी ❤️ ने बनवले",
 
@@ -373,9 +373,9 @@ const translations = {
     about_achievement_4: "डिजिटल वर्गखोली",
     about_achievement_4_desc: "डिजिटल शिक्षण कार्यक्रम यशस्वीरित्या अंमलात आणला.",
     about_principal_title: "शिक्षिका संदेश",
-    about_principal_name: "सौ. रंजिता सदानंद परदेशी",
+    about_principal_name: "सौ. सुष्मिता पवार",
     about_principal_role: "वर्ग शिक्षिका",
-    about_principal_message: "जि.प. कुडावे शाळेत, आम्ही विश्वास ठेवतो की प्रत्येक मुलाला दर्जेदार शिक्षण मिळायला हवे. आमचा समर्पित संघ एक आकर्षक आणि पोषक शिक्षण वातावरण तयार करण्यासाठी अथक परिश्रम करतो.",
+    about_principal_message: "जि. प. शाळेत, आम्ही विश्वास ठेवतो की प्रत्येक मुलाला दर्जेदार शिक्षण मिळायला हवे. आमचा समर्पित संघ एक आकर्षक आणि पोषक शिक्षण वातावरण तयार करण्यासाठी अथक परिश्रम करतो.",
 
     // Donate Page
     donate_title: "आमच्या शाळेला सपोर्ट करा",
@@ -565,12 +565,12 @@ const translations = {
     nav_register: "रजिस्टर",
     nav_dashboard: "डैशबोर्ड",
     nav_logout: "लॉगआउट",
-    nav_school_name: "जि. प. कुडावे स्कूल",
+    nav_school_name: "जि. प. स्कूल",
 
     // Hero
-    hero_title: "रायगड जिला परिषद स्कूल कुडावे",
+    hero_title: "रायगड जिला परिषद स्कूल",
     hero_subtitle: "सरकारी प्राथमिक विद्यालय | कक्षा 1 से 4",
-    hero_location: "कुडावे, पनवेल, रायगड, महाराष्ट्र",
+    hero_location: "पनवेल, रायगड, महाराष्ट्र",
     hero_explore: "स्कूल देखें",
     hero_donate: "दान करें",
 
@@ -586,7 +586,7 @@ const translations = {
 
     // About Preview
     about_preview_title: "हमारे स्कूल के बारे में",
-    about_preview_text: "रायगड जिला परिषद स्कूल कुडावे पनवेल, रायगड जिले के ग्रामीण क्षेत्रों में बच्चों को गुणवत्तापूर्ण शिक्षा प्रदान करने के लिए समर्पित एक सरकारी प्राथमिक विद्यालय है.",
+    about_preview_text: "रायगड जिला परिषद स्कूल पनवेल, रायगड जिले के ग्रामीण क्षेत्रों में बच्चों को गुणवत्तापूर्ण शिक्षा प्रदान करने के लिए समर्पित एक सरकारी प्राथमिक विद्यालय है.",
     about_read_more: "और पढ़ें",
 
     // School Events
@@ -624,12 +624,12 @@ const translations = {
     donation_cta_button: "दान करें",
 
     // Footer
-    footer_about: "रायगड जिला परिषद स्कूल कुडावे गुणवत्तापूर्ण प्राथमिक शिक्षा प्रदान करने के लिए प्रतिबद्ध है.",
+    footer_about: "रायगड जिला परिषद स्कूल गुणवत्तापूर्ण प्राथमिक शिक्षा प्रदान करने के लिए प्रतिबद्ध है.",
     footer_quick_links: "त्वरित लिंक",
     footer_contact_info: "संपर्क जानकारी",
-    footer_address: "कुडावे, पनवेल, रायगड, महाराष्ट्र, भारत",
+    footer_address: "पनवेल, रायगड, महाराष्ट्र, भारत",
     footer_phone: "+91 9876543210",
-    footer_email: "rzpschoolkudave1956@gmail.com",
+    footer_email: "rzpschool1956@gmail.com",
     footer_rights: "सर्वाधिकार सुरक्षित",
     footer_made_with: "शिक्षा के लिए ❤️ से बनाया",
 
@@ -650,9 +650,9 @@ const translations = {
     about_achievement_4: "डिजिटल कक्षा",
     about_achievement_4_desc: "डिजिटल लर्निंग प्रोग्राम सफलतापूर्वक लागू किया.",
     about_principal_title: "शिक्षिका का संदेश",
-    about_principal_name: "सौ. रंजिता सदानंद परदेशी",
+    about_principal_name: "सौ. सुष्मिता पवार",
     about_principal_role: "कक्षा शिक्षिका",
-    about_principal_message: "जि.प. कुडावे स्कूल में, हम मानते हैं कि हर बच्चा गुणवत्तापूर्ण शिक्षा का हकदार है. हमारी समर्पित टीम एक आकर्षक शिक्षण वातावरण बनाने के लिए अथक प्रयास करती है.",
+    about_principal_message: "जि. प. स्कूल में, हम मानते हैं कि हर बच्चा गुणवत्तापूर्ण शिक्षा का हकदार है. हमारी समर्पित टीम एक आकर्षक शिक्षण वातावरण बनाने के लिए अथक प्रयास करती है.",
 
     // Donate Page
     donate_title: "हमारे स्कूल का समर्थन करें",
